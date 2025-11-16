@@ -290,8 +290,9 @@ export default function Home() {
 
     try {
       // Prepare messages for API - add "Not Chat" system message if not already present
+      // Note: Message type only has 'user' | 'assistant', so we always add system message
       const conversationMessages = conv?.messages || [];
-      const hasSystemMessage = conversationMessages.some(msg => msg.role === 'system');
+      const hasSystemMessage = false;
       
       const apiMessages = [
         ...(hasSystemMessage ? [] : [{
