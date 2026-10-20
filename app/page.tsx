@@ -374,7 +374,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-950">
+    <div className="flex h-screen bg-paper text-ink">
       <ConversationSidebar
         conversations={conversations}
         currentConversationId={currentConversationId}
@@ -384,23 +384,40 @@ export default function Home() {
         currentModel={currentConversation?.model || 'grok-4-fast'}
         onModelChange={changeModel}
       />
-      <div className="flex-1">
-        {currentConversation ? (
-          <ChatInterface
-            messages={currentConversation.messages}
-            onSendMessage={sendMessage}
-            onEditMessage={editMessage}
-            isLoading={isLoading}
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-gray-400">
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-2">No conversation selected</h2>
-              <p className="text-sm">Create a new chat to get started</p>
+      <main className="flex-1 min-w-0 flex flex-col">
+        <header className="h-14 shrink-0 flex items-center justify-between gap-4 px-6 border-b border-rule bg-paper">
+          <h1 className="font-display text-lg font-semibold text-ink truncate">
+            {currentConversation ? currentConversation.title : 'DuckChat'}
+          </h1>
+          {currentConversation && (
+            <span className="shrink-0 inline-flex items-center gap-1.5 h-7 px-2.5 rounded-full border border-rule bg-surface font-mono text-xs text-ink-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-brand" aria-hidden="true" />
+              {currentConversation.model}
+            </span>
+          )}
+        </header>
+        <div className="flex-1 min-h-0">
+          {currentConversation ? (
+            <ChatInterface
+              messages={currentConversation.messages}
+              onSendMessage={sendMessage}
+              onEditMessage={editMessage}
+              isLoading={isLoading}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full px-6">
+              <div className="text-center max-w-md">
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <span className="h-[3px] w-5 rounded-full bg-brand" aria-hidden="true" />
+                  <span className="sa-label text-brand-text">AI Builders</span>
+                </div>
+                <h2 className="font-display text-4xl font-semibold text-ink mb-3">No conversation selected</h2>
+                <p className="text-[15px] text-muted">Create a new chat to get started</p>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

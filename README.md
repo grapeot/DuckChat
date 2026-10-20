@@ -7,7 +7,7 @@ A ChatGPT-like interface built with Next.js, featuring a two-column layout with 
 - 🗨️ Two-column interface: conversations sidebar (left) and chat interface (right)
 - 💬 Multiple conversation management
 - 💾 Local storage persistence for conversations
-- 🎨 Modern, dark-themed UI
+- 🎨 Light UI in the Superlinear Academy / AI Builders style (fonts bundled locally under `app/fonts`, SIL OFL)
 - ⚡ Real-time chat with AI models
 
 ## Setup
