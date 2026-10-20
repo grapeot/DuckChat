@@ -1,26 +1,237 @@
 @import "tailwindcss";
 
+/* Superlinear Academy brand tokens (web surfaces).
+   Light, warm paper; near-black ink; brand green #238343 as the one bright colour.
+   Small green text uses #22683b for contrast. No shadows, no gradients: flat cards with hairlines. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  --sa-paper: #f4f3ee;          /* app background */
+  --sa-surface: #fbfaf7;        /* cards, assistant messages, composer */
+  --sa-sidebar: #fefdfc;        /* sidebar */
+  --sa-sidebar-hover: #f4f5ef;
+  --sa-sidebar-active: #e8efe5;
+  --sa-ink: #18201d;            /* body text */
+  --sa-ink-2: #3a423e;          /* secondary text */
+  --sa-muted: #5f6762;          /* labels, captions (>= 4.9:1 on paper) */
+  --sa-rule: #e2e0d8;           /* hairlines */
+  --sa-rule-strong: #cfccc2;    /* input borders */
+  --sa-code: #efeee8;           /* code blocks, table headers */
+
+  --sa-green: #238343;          /* brand green: buttons, focus, marks */
+  --sa-green-hover: #1d7039;
+  --sa-green-text: #22683b;     /* green text below 24 px */
+  --sa-green-tint: #e3eee2;     /* user messages */
+  --sa-green-line: #c9dcc8;
+  --sa-green-wash: #f0f5ef;
+
+  /* Inter for UI and reading text, Newsreader 600 for display, Outfit for labels, JetBrains Mono for code.
+     CJK falls through to the system fonts named after each web font. */
+  --sa-font-sans: var(--font-inter), "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --sa-font-display: var(--font-newsreader), "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --sa-font-label: var(--font-outfit), "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+  --sa-font-mono: var(--font-jetbrains-mono), "SF Mono", Menlo, Consolas, monospace;
+
+  --background: var(--sa-paper);
+  --foreground: var(--sa-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-paper: var(--sa-paper);
+  --color-surface: var(--sa-surface);
+  --color-sidebar: var(--sa-sidebar);
+  --color-sidebar-hover: var(--sa-sidebar-hover);
+  --color-sidebar-active: var(--sa-sidebar-active);
+  --color-ink: var(--sa-ink);
+  --color-ink-2: var(--sa-ink-2);
+  --color-muted: var(--sa-muted);
+  --color-rule: var(--sa-rule);
+  --color-rule-strong: var(--sa-rule-strong);
+  --color-code: var(--sa-code);
+  --color-brand: var(--sa-green);
+  --color-brand-hover: var(--sa-green-hover);
+  --color-brand-text: var(--sa-green-text);
+  --color-brand-tint: var(--sa-green-tint);
+  --color-brand-line: var(--sa-green-line);
+  --color-brand-wash: var(--sa-green-wash);
+
+  --font-sans: var(--sa-font-sans);
+  --font-display: var(--sa-font-display);
+  --font-label: var(--sa-font-label);
+  --font-mono: var(--sa-font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--sa-font-sans);
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: var(--sa-green-tint);
+  color: var(--sa-ink);
+}
+
+/* Display type: Newsreader 600, slight negative tracking */
+.font-display {
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+
+/* Thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sa-rule-strong) transparent;
+}
+
+@layer components {
+/* Letter-spaced uppercase label (kicker) */
+.sa-label {
+  font-family: var(--sa-font-label);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--sa-muted);
+}
+
+/* Native select with a custom chevron */
+.sa-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235f6762' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+}
+
+/* ---------- Markdown inside assistant messages ---------- */
+.sa-markdown {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--sa-ink);
+  overflow-wrap: anywhere;
+}
+.sa-markdown > :first-child { margin-top: 0; }
+.sa-markdown > :last-child { margin-bottom: 0; }
+.sa-markdown p { margin: 0.6em 0; }
+.sa-markdown strong { font-weight: 600; color: var(--sa-ink); }
+.sa-markdown h1,
+.sa-markdown h2,
+.sa-markdown h3 {
+  font-family: var(--sa-font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--sa-ink);
+}
+.sa-markdown h1 { font-size: 1.5rem; margin: 1.1em 0 0.5em; }
+.sa-markdown h2 { font-size: 1.3rem; margin: 1em 0 0.45em; }
+.sa-markdown h3 { font-size: 1.12rem; margin: 0.9em 0 0.4em; }
+.sa-markdown ul,
+.sa-markdown ol { margin: 0.6em 0; padding-left: 1.4em; }
+.sa-markdown ul { list-style: disc; }
+.sa-markdown ol { list-style: decimal; }
+.sa-markdown li { margin: 0.25em 0; padding-left: 0.2em; }
+.sa-markdown li::marker { color: var(--sa-muted); }
+.sa-markdown a {
+  color: var(--sa-green-text);
+  text-decoration: underline;
+  text-decoration-color: var(--sa-green-line);
+  text-underline-offset: 3px;
+}
+.sa-markdown a:hover { text-decoration-color: var(--sa-green-text); }
+.sa-markdown code {
+  font-family: var(--sa-font-mono);
+  font-size: 0.86em;
+  /* Show source exactly as typed: no programming ligatures (-> stays ->) */
+  font-feature-settings: "calt" 0, "liga" 0;
+  font-variant-ligatures: none;
+}
+.sa-markdown :not(pre) > code {
+  background: var(--sa-code);
+  border: 1px solid var(--sa-rule);
+  border-radius: 6px;
+  padding: 0.1em 0.38em;
+  white-space: break-spaces;
+}
+.sa-markdown pre {
+  background: var(--sa-code);
+  border: 1px solid var(--sa-rule);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 0.8em 0;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+.sa-markdown pre code {
+  display: block;
+  font-size: 13px;
+  color: var(--sa-ink);
+  white-space: pre;
+}
+.sa-markdown blockquote {
+  border-left: 3px solid var(--sa-green-line);
+  padding: 0.1em 0 0.1em 1em;
+  margin: 0.8em 0;
+  color: var(--sa-ink-2);
+  font-family: var(--sa-font-display);
+  font-style: italic;
+  font-size: 1.05em;
+}
+.sa-markdown table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0.9em 0;
+  font-size: 14px;
+  border: 1px solid var(--sa-rule);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sa-markdown th,
+.sa-markdown td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--sa-rule);
+}
+.sa-markdown th + th,
+.sa-markdown td + td { border-left: 1px solid var(--sa-rule); }
+.sa-markdown tr:last-child td { border-bottom: 0; }
+.sa-markdown th {
+  background: var(--sa-code);
+  font-family: var(--sa-font-label);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sa-ink-2);
+}
+.sa-markdown hr {
+  border: 0;
+  border-top: 1px solid var(--sa-rule);
+  margin: 1.2em 0;
+}
+
+/* Typing indicator */
+@keyframes sa-pulse {
+  0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-2px); }
+}
+.sa-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--sa-green);
+  animation: sa-pulse 1.2s infinite ease-in-out;
 }

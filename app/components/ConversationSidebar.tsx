@@ -30,21 +30,36 @@ export default function ConversationSidebar({
   onModelChange,
 }: ConversationSidebarProps) {
   return (
-    <div className="flex flex-col h-screen w-64 bg-gray-900 text-white border-r border-gray-800">
-      <div className="p-4 border-b border-gray-800 space-y-3">
+    <aside className="flex flex-col h-full w-72 shrink-0 bg-sidebar text-ink border-r border-rule">
+      {/* Brand */}
+      <div className="px-5 pt-6 pb-5">
+        <div className="flex items-center gap-2">
+          <span className="h-[3px] w-5 rounded-full bg-brand" aria-hidden="true" />
+          <span className="sa-label text-brand-text">AI Builders</span>
+        </div>
+        <div className="font-display text-[28px] leading-none font-semibold text-ink mt-2.5">
+          DuckChat
+        </div>
+      </div>
+
+      <div className="px-5 pb-5 space-y-5 border-b border-rule">
         <button
           onClick={onNewConversation}
-          className="w-full px-4 py-2 bg-white text-black rounded-lg hover:bg-gray-100 transition-colors font-medium"
+          className="w-full flex items-center justify-center gap-2 h-11 px-4 bg-brand text-white rounded-xl hover:bg-brand-hover active:translate-y-px transition-colors font-semibold text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
         >
-          + New Chat
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M12 5v14M5 12h14" />
+          </svg>
+          New Chat
         </button>
         {onModelChange && (
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Model</label>
+            <label htmlFor="model-select" className="sa-label block mb-2">Model</label>
             <select
+              id="model-select"
               value={currentModel}
               onChange={(e) => onModelChange(e.target.value as Model)}
-              className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:border-blue-500 text-sm"
+              className="sa-select w-full h-10 pl-3 bg-surface text-ink rounded-xl border border-rule-strong hover:border-muted focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 text-sm font-medium cursor-pointer transition-colors"
             >
               {MODELS.map((model) => (
                 <option key={model.value} value={model.value}>
@@ -52,36 +67,41 @@ export default function ConversationSidebar({
                 </option>
               ))}
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted mt-2 leading-snug">
               {MODELS.find((m) => m.value === currentModel)?.description}
             </p>
           </div>
         )}
       </div>
-      
+
       <div className="flex-1 overflow-y-auto">
-        <div className="p-2">
+        <div className="px-3 py-4">
+          <div className="sa-label px-2 mb-2">Conversations</div>
           {conversations.length === 0 ? (
-            <div className="text-gray-400 text-sm p-4 text-center">
+            <div className="text-muted text-sm px-2 py-6 text-center">
               No conversations yet
             </div>
           ) : (
             conversations.map((conv) => (
               <div
                 key={conv.id}
-                className={`group relative p-3 mb-1 rounded-lg cursor-pointer transition-colors ${
+                className={`group relative px-3 py-2.5 mb-0.5 rounded-xl cursor-pointer transition-colors ${
                   currentConversationId === conv.id
-                    ? 'bg-gray-800'
-                    : 'hover:bg-gray-800'
+                    ? 'bg-sidebar-active'
+                    : 'hover:bg-sidebar-hover'
                 }`}
                 onClick={() => onSelectConversation(conv.id)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium truncate">
+                    <div
+                      className={`text-sm truncate ${
+                        currentConversationId === conv.id ? 'font-semibold text-ink' : 'font-medium text-ink-2'
+                      }`}
+                    >
                       {conv.title}
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">
+                    <div className="text-xs text-muted mt-0.5">
                       {conv.messages.length} messages
                     </div>
                   </div>
@@ -90,7 +110,8 @@ export default function ConversationSidebar({
                       e.stopPropagation();
                       onDeleteConversation(conv.id);
                     }}
-                    className="opacity-0 group-hover:opacity-100 ml-2 text-gray-400 hover:text-white transition-opacity"
+                    className="opacity-0 group-hover:opacity-100 focus:opacity-100 ml-2 p-1 rounded-md text-muted hover:text-ink hover:bg-paper transition-opacity"
+                    title="Delete conversation"
                   >
                     <svg
                       className="w-4 h-4"
@@ -112,7 +133,10 @@ export default function ConversationSidebar({
           )}
         </div>
       </div>
-    </div>
+
+      <div className="px-5 py-4 border-t border-rule">
+        <div className="sa-label text-[10px]">Superlinear Academy</div>
+      </div>
+    </aside>
   );
 }
-
